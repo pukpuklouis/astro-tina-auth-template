@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "astro-tina-auth-template",
+  "main": "dist/_worker.js/index.js",
+  "compatibility_date": "2026-03-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "dist",
+    "run_worker_first": [
+      "/admin",
+      "/admin/*",
+      "/api/auth/*",
+      "/login",
+      "/login/*"
+    ]
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "SITE_URL": "https://your-worker.your-subdomain.workers.dev",
+    "BETTER_AUTH_URL": "https://your-worker.your-subdomain.workers.dev",
+    "EMAIL_FROM": "noreply@example.com",
+    "TINA_PUBLIC_IS_LOCAL": "false"
+  },
+  // D1 will be auto-created and injected by scripts/bootstrap-cloudflare.sh
+  // wrangler d1 create <name> --binding DB --update-config
+
+  // Production secrets (set via wrangler secret put)
+  // wrangler secret put BETTER_AUTH_SECRET
+  // wrangler secret put RESEND_API_KEY
+}
