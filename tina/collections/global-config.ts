@@ -29,14 +29,37 @@ export const GlobalConfigCollection: Collection = {
         },
         {
           name: "siteOwner",
-          label: "Your Name, Company Name (Used in the footer",
+          label: "Your Name, Company Name (Used in the footer)",
           required: true,
           type: "string",
           ui: {
-            defaultValue: "Your name here"
+            defaultValue: "Your name here",
           },
         },
-        // Add more settings here...
+        {
+          name: "locale",
+          label: "Open Graph locale (e.g. en_US)",
+          required: true,
+          type: "string",
+          ui: {
+            defaultValue: "en_US",
+          },
+        },
+        {
+          name: "twitterHandle",
+          label: "Twitter handle (optional, include @)",
+          required: false,
+          type: "string",
+        },
+        {
+          name: "defaultOgImage",
+          label: "Default OG image path",
+          required: true,
+          type: "string",
+          ui: {
+            defaultValue: "/blog-placeholder-1.jpg",
+          },
+        },
       ],
     },
     {
@@ -47,7 +70,7 @@ export const GlobalConfigCollection: Collection = {
       ui: {
         itemProps: (item) => {
           return {
-            label: item.title
+            label: item.title,
           };
         },
       },
@@ -56,16 +79,15 @@ export const GlobalConfigCollection: Collection = {
           name: "title",
           label: "Title of Nav Item",
           type: "string",
-          required: true
+          required: true,
         },
         {
           name: "link",
           label: "Path of the Nav Item",
           type: "string",
-          required: true
-
-        }
-      ]
+          required: true,
+        },
+      ],
     },
     {
       name: "contactLinks",
@@ -75,33 +97,33 @@ export const GlobalConfigCollection: Collection = {
       ui: {
         itemProps: (item) => {
           return {
-            label: item.title
-          }
+            label: item.title,
+          };
         },
       },
       fields: [
         {
           name: "title",
           label: "Title",
-          type: "string"
+          type: "string",
         },
         {
           name: "link",
           label: "Link",
-          type: "string"
+          type: "string",
         },
         {
           name: "icon",
           label: "Icon",
           type: "string",
           ui: {
-            //@ts-ignore
-            component: IconComponent
-          }
-        }
+            // @ts-ignore
+            component: IconComponent,
+          },
+        },
       ],
-    }
+    },
 
     // Add other config fields here...
-  ]
-}
+  ],
+};

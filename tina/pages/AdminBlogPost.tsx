@@ -24,7 +24,7 @@ export default function AdminBlogPost(props: Props) {
 	return (
 		<article>
 			<div data-tina-field={tinaField(blog, "heroImage")} className="hero-image">
-				{blog.heroImage && <img width={1020} height={510} src={blog.heroImage} alt="" />}
+				{blog.heroImage && <img width={1020} height={510} src={blog.heroImage} alt={blog.title || "Blog hero image"} />}
 			</div>
 			<div className="prose">
 				<div className="title">

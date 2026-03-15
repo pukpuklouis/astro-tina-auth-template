@@ -2,7 +2,10 @@
   "seo": {
     "title": "Astro Blog + Tina",
     "description": "Welcome to my website!",
-    "siteOwner": "Your name here"
+    "siteOwner": "Your name here",
+    "locale": "en_US",
+    "twitterHandle": "",
+    "defaultOgImage": "/blog-placeholder-1.jpg"
   },
   "nav": [
     {

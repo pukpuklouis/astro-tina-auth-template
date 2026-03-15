@@ -1,17 +1,62 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import config from '../content/config/config.json';
 
-type Props = CollectionEntry<'blog'>['data'];
+type BlogData = {
+	title?: string;
+	description?: string;
+	heroImage?: string | null;
+	pubDate?: string;
+	updatedDate?: string;
+};
 
-const { title, description } = Astro.props;
+type BlogPostProps = {
+	data?: {
+		blog?: BlogData;
+	};
+};
+
+const blog = ((Astro.props as BlogPostProps).data?.blog ?? {}) as BlogData;
+
+const title = blog.title || config.seo.title;
+const description = blog.description || config.seo.description;
+const image = blog.heroImage || config.seo.defaultOgImage || '/blog-placeholder-1.jpg';
+
+const articleSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description,
+	datePublished: blog.pubDate ? new Date(blog.pubDate).toISOString() : undefined,
+	dateModified: blog.updatedDate
+		? new Date(blog.updatedDate).toISOString()
+		: blog.pubDate
+			? new Date(blog.pubDate).toISOString()
+			: undefined,
+	author: {
+		'@type': 'Person',
+		name: config.seo.siteOwner,
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: config.seo.siteOwner,
+	},
+	image,
+	mainEntityOfPage: Astro.url.toString(),
+};
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead
+			title={title}
+			description={description}
+			image={image}
+			type="article"
+			schema={articleSchema}
+		/>
 		<style>
 			main {
 				width: calc(100% - 2em);
