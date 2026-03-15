@@ -1,5 +1,5 @@
 ---
-// Simple login page for magic link authentication
+// Login page for email + password authentication
 ---
 
 <!DOCTYPE html>
@@ -7,6 +7,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
   <title>登入 - TinaCMS Admin</title>
   <style>
     * {
@@ -14,7 +16,7 @@
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -24,37 +26,65 @@
       justify-content: center;
       padding: 20px;
     }
-    
+
     .login-container {
       background: white;
       border-radius: 16px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      padding: 48px;
+      padding: 40px;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
     }
-    
+
     .logo {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
-    
+
     .logo h1 {
       font-size: 28px;
       color: #1a202c;
       font-weight: 700;
     }
-    
+
     .logo p {
       color: #718096;
       margin-top: 8px;
       font-size: 14px;
     }
-    
-    .form-group {
-      margin-bottom: 24px;
+
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 6px;
     }
-    
+
+    .mode-switch button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #4a5568;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mode-switch button.active {
+      background: white;
+      color: #1a202c;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
     label {
       display: block;
       font-size: 14px;
@@ -62,24 +92,25 @@
       color: #2d3748;
       margin-bottom: 8px;
     }
-    
-    input[type="email"] {
+
+    input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px 14px;
       border: 2px solid #e2e8f0;
       border-radius: 8px;
       font-size: 16px;
       transition: border-color 0.2s;
     }
-    
-    input[type="email"]:focus {
+
+    input:focus {
       outline: none;
       border-color: #667eea;
     }
-    
-    button {
+
+    #submitBtn {
       width: 100%;
       padding: 14px;
+      margin-top: 4px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
@@ -89,55 +120,65 @@
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    
-    button:hover {
+
+    #submitBtn:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
-    
-    button:active {
+
+    #submitBtn:active {
       transform: translateY(0);
     }
-    
-    button:disabled {
+
+    #submitBtn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
-    
+
     .message {
-      margin-top: 24px;
-      padding: 16px;
+      margin-top: 16px;
+      padding: 12px;
       border-radius: 8px;
       text-align: center;
       font-size: 14px;
+      line-height: 1.5;
     }
-    
+
     .message.success {
       background: #c6f6d5;
       color: #22543d;
     }
-    
+
     .message.error {
       background: #fed7d7;
       color: #742a2a;
     }
-    
-    .message.hidden {
+
+    .message.hidden,
+    .hidden {
       display: none;
     }
-    
+
+    .helper-text {
+      color: #718096;
+      font-size: 12px;
+      margin-top: 6px;
+      text-align: center;
+    }
+
     .back-link {
       text-align: center;
-      margin-top: 24px;
+      margin-top: 20px;
     }
-    
+
     .back-link a {
       color: #667eea;
       text-decoration: none;
       font-size: 14px;
     }
-    
+
     .back-link a:hover {
       text-decoration: underline;
     }
@@ -147,101 +188,174 @@
   <div class="login-container">
     <div class="logo">
       <h1>TinaCMS Admin</h1>
-      <p>輸入您的電子郵件以接收登入連結</p>
+      <p>使用 Email + 密碼登入</p>
     </div>
-    
-    <form id="loginForm">
+
+    <div class="mode-switch">
+      <button type="button" id="signInMode" class="active">登入</button>
+      <button type="button" id="signUpMode">註冊</button>
+    </div>
+
+    <form id="authForm">
+      <div class="form-group hidden" id="nameGroup">
+        <label for="name">名稱</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="您的名稱"
+          autocomplete="name"
+        />
+      </div>
+
       <div class="form-group">
         <label for="email">電子郵件</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          required 
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
           placeholder="your@email.com"
           autocomplete="email"
         />
       </div>
-      
-      <button type="submit" id="submitBtn">
-        發送登入連結
-      </button>
+
+      <div class="form-group">
+        <label for="password">密碼</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          minlength="8"
+          placeholder="至少 8 個字元"
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button type="submit" id="submitBtn">登入</button>
+      <p class="helper-text" id="helperText">若尚未建立帳號，先切換到「註冊」</p>
     </form>
-    
+
     <div id="message" class="message hidden"></div>
-    
+
     <div class="back-link">
       <a href="/">← 返回首頁</a>
     </div>
   </div>
-  
+
   <script>
-    const form = document.getElementById('loginForm');
+    const signInModeBtn = document.getElementById('signInMode');
+    const signUpModeBtn = document.getElementById('signUpMode');
+    const form = document.getElementById('authForm');
+    const nameGroup = document.getElementById('nameGroup');
+    const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
     const submitBtn = document.getElementById('submitBtn');
     const messageDiv = document.getElementById('message');
-    
-    // Get callback URL from query params
+    const helperText = document.getElementById('helperText');
+
+    let mode = 'signin';
+
     const urlParams = new URLSearchParams(window.location.search);
     const callbackUrl = urlParams.get('callbackUrl') || '/admin';
-    
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      const isSignUp = mode === 'signup';
+
+      signInModeBtn.classList.toggle('active', !isSignUp);
+      signUpModeBtn.classList.toggle('active', isSignUp);
+      nameGroup.classList.toggle('hidden', !isSignUp);
+      nameInput.required = isSignUp;
+
+      submitBtn.textContent = isSignUp ? '註冊並登入' : '登入';
+      helperText.textContent = isSignUp
+        ? '註冊成功後會直接登入並導向後台'
+        : '若尚未建立帳號，先切換到「註冊」';
+
+      messageDiv.className = 'message hidden';
+    }
+
+    signInModeBtn.addEventListener('click', () => setMode('signin'));
+    signUpModeBtn.addEventListener('click', () => setMode('signup'));
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const email = emailInput.value.trim();
-      if (!email) {
-        showMessage('請輸入電子郵件地址', 'error');
+      const password = passwordInput.value;
+      const name = nameInput.value.trim();
+
+      if (!email || !password) {
+        showMessage('請填寫電子郵件與密碼', 'error');
         return;
       }
-      
-      // Disable form while submitting
+
+      if (mode === 'signup' && !name) {
+        showMessage('註冊時請填寫名稱', 'error');
+        return;
+      }
+
+      if (password.length < 8) {
+        showMessage('密碼至少需要 8 個字元', 'error');
+        return;
+      }
+
       submitBtn.disabled = true;
-      submitBtn.textContent = '發送中...';
-      
+      submitBtn.textContent = mode === 'signup' ? '註冊中...' : '登入中...';
+
       try {
-        const response = await fetch('/api/auth/sign-in/magic-link', {
+        const endpoint = mode === 'signup' ? '/api/auth/sign-up/email' : '/api/auth/sign-in/email';
+        const body = {
+          email,
+          password,
+          callbackURL: callbackUrl,
+          ...(mode === 'signup' ? { name } : {}),
+        };
+
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            email: email,
-            callbackURL: callbackUrl,
-          }),
+          body: JSON.stringify(body),
         });
-        
-        if (response.ok) {
-          showMessage(
-            '登入連結已發送到您的電子郵件！請檢查收件匣（和垃圾郵件資料夾）。',
-            'success'
-          );
-          form.reset();
-        } else {
-          const error = await response.text();
-          showMessage(
-            '發送失敗。請確認電子郵件地址正確，或稍後再試。',
-            'error'
-          );
+
+        const text = await response.text();
+        let data = null;
+
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch {
+          data = null;
         }
+
+        if (!response.ok) {
+          const errorMessage = data?.message || '登入失敗，請確認帳密是否正確';
+          showMessage(errorMessage, 'error');
+          return;
+        }
+
+        showMessage(mode === 'signup' ? '註冊成功，正在導向後台...' : '登入成功，正在導向後台...', 'success');
+
+        const redirectUrl = data?.url || callbackUrl;
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 400);
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('Auth error:', error);
         showMessage('網路錯誤。請檢查網路連線後重試。', 'error');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = '發送登入連結';
+        submitBtn.textContent = mode === 'signup' ? '註冊並登入' : '登入';
       }
     });
-    
+
     function showMessage(text, type) {
       messageDiv.textContent = text;
       messageDiv.className = `message ${type}`;
-      
-      // Auto-hide success messages after 10 seconds
-      if (type === 'success') {
-        setTimeout(() => {
-          messageDiv.className = 'message hidden';
-        }, 10000);
-      }
     }
   </script>
 </body>

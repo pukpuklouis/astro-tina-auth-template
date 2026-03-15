@@ -7,9 +7,6 @@ type RuntimeEnv = {
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;
   SITE_URL?: string;
-  RESEND_API_KEY?: string;
-  EMAIL_FROM?: string;
-  TINA_PUBLIC_IS_LOCAL?: string;
 };
 
 export const ALL: APIRoute = async ({ locals, request }) => {
@@ -33,19 +30,11 @@ export const ALL: APIRoute = async ({ locals, request }) => {
   // 從環境變數讀取配置
   const secret = env.BETTER_AUTH_SECRET;
   const baseURL = env.BETTER_AUTH_URL || env.SITE_URL || new URL(request.url).origin;
-  const resendApiKey = env.RESEND_API_KEY;
-  const emailFrom = env.EMAIL_FROM || "noreply@example.com";
-  const isLocal = env.TINA_PUBLIC_IS_LOCAL === "true";
 
   // 創建 auth 實例
   const authInstance = auth(env.DB as D1Database, {
     secret,
     baseURL,
-    isLocal,
-    emailConfig: {
-      resendApiKey,
-      emailFrom,
-    },
   });
 
   // 使用 handler 處理請求（支援所有 Better Auth 路由）

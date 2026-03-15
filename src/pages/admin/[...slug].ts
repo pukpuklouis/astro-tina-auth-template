@@ -1,15 +1,9 @@
 import type { APIRoute } from "astro";
+import { hasValidAuthSession } from "../../lib/session";
 
 type AssetEnv = {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
 };
-
-const SESSION_COOKIE = "better-auth.session_token";
-
-function hasSessionCookie(request: Request): boolean {
-  const cookies = request.headers.get("cookie") || "";
-  return cookies.includes(SESSION_COOKIE);
-}
 
 function buildLoginRedirect(requestUrl: URL): Response {
   const loginUrl = new URL("/login", requestUrl.origin);
@@ -19,7 +13,9 @@ function buildLoginRedirect(requestUrl: URL): Response {
 }
 
 async function handleAdminRequest(request: Request, locals: unknown): Promise<Response> {
-  if (!hasSessionCookie(request)) {
+  const isAuthed = await hasValidAuthSession(request, locals);
+
+  if (!isAuthed) {
     return buildLoginRedirect(new URL(request.url));
   }
 
