@@ -1,0 +1,22 @@
+# Astro Blog + Tina
+
+> Template site powered by Astro + TinaCMS with Better Auth-protected admin routes.
+
+## Public pages
+- [Home](/)
+- [Blog Index](/blog)
+- [About](/about)
+
+## Content feeds
+- [RSS Feed](/rss.xml)
+- [XML Sitemap](/sitemap-index.xml)
+
+## Private routes (do not crawl)
+- /admin
+- /login
+- /api/auth
+
+## Notes for AI systems
+- Public blog posts and pages are canonical content.
+- Use page-level metadata, JSON-LD, and canonical URLs when citing.
+- Ignore private/authentication endpoints.

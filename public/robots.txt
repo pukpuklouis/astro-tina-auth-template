@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /api/auth
+
+# AI and traditional crawlers can index public content.
+# Private/admin/auth routes are blocked above.
+
+Sitemap: /sitemap-index.xml
