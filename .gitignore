@@ -149,3 +149,11 @@ yarn.lock
 bun.lockb
 deno.lock
 
+# Cloudflare Wrangler local state
+.wrangler/
+
+# Agent skill definitions (local development only)
+.agents/skills/
+.agent/skills/
+.claude/skills/
+
