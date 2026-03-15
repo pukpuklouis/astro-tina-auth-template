@@ -7,27 +7,18 @@
   "assets": {
     "binding": "ASSETS",
     "directory": "dist",
-    "run_worker_first": [
-      "/admin",
-      "/admin/*",
-      "/api/auth/*",
-      "/login",
-      "/login/*"
-    ]
+    "run_worker_first": true
   },
   "observability": {
     "enabled": true
   },
   "vars": {
     "SITE_URL": "https://your-worker.your-subdomain.workers.dev",
-    "BETTER_AUTH_URL": "https://your-worker.your-subdomain.workers.dev",
-    "EMAIL_FROM": "noreply@example.com",
-    "TINA_PUBLIC_IS_LOCAL": "false"
+    "BETTER_AUTH_URL": "https://your-worker.your-subdomain.workers.dev"
   },
   // D1 will be auto-created and injected by scripts/bootstrap-cloudflare.sh
   // wrangler d1 create <name> --binding DB --update-config
 
   // Production secrets (set via wrangler secret put)
   // wrangler secret put BETTER_AUTH_SECRET
-  // wrangler secret put RESEND_API_KEY
 }

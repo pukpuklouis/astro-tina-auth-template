@@ -1,6 +1,6 @@
 # Astro Tina Auth Template
 
-Cloudflare Workers + Astro + TinaCMS + Better Auth（Magic Link）的可部署範本。
+Cloudflare Workers + Astro + TinaCMS + Better Auth（Email + Password）的可部署範本。
 
 - TinaCMS 後台路徑：`/admin`
 - 登入頁：`/login`
@@ -84,14 +84,15 @@ All commands are run from the root of the project, from a terminal:
 
 ## Cloudflare 一鍵部署（Template 用）
 
-1. 準備環境變數（正式寄信需要 Resend）
+1. 準備環境變數
 
 ```bash
-export RESEND_API_KEY="re_xxx"
 export BETTER_AUTH_SECRET="$(openssl rand -hex 32)"
 ```
 
 2. 執行：
+
+> 首次使用可先到 `/login` 切換到「註冊」，建立第一個管理員帳號。
 
 ```bash
 npm run deploy:bootstrap
@@ -103,7 +104,6 @@ npm run deploy:bootstrap
 - 套用 `wrangler d1 migrations apply --remote`
 - 執行 `migrations/0001_better_auth_init.sql`
 - `wrangler secret put BETTER_AUTH_SECRET`
-- `wrangler secret put RESEND_API_KEY`
 - build + deploy + `/api/auth/ok` smoke test
 
 

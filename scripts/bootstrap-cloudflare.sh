@@ -3,7 +3,7 @@ set -euo pipefail
 
 # 一鍵初始化 Cloudflare 資源 + 部署
 # 用法：
-#   RESEND_API_KEY=xxx BETTER_AUTH_SECRET=xxx ./scripts/bootstrap-cloudflare.sh
+#   BETTER_AUTH_SECRET=xxx ./scripts/bootstrap-cloudflare.sh
 # 若 BETTER_AUTH_SECRET 未提供，會自動產生 32-byte hex secret。
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -35,12 +35,6 @@ fi
 
 if ! command -v wrangler >/dev/null 2>&1; then
   echo "❌ 找不到 wrangler，請先 npm install"
-  exit 1
-fi
-
-if [[ -z "${RESEND_API_KEY:-}" ]]; then
-  echo "❌ 請先設定 RESEND_API_KEY 環境變數"
-  echo "   例如: RESEND_API_KEY=re_xxx ./scripts/bootstrap-cloudflare.sh"
   exit 1
 fi
 
@@ -79,7 +73,6 @@ wrangler d1 execute "$DB_NAME" --remote --file "$MIGRATION_FILE"
 
 echo "==> 更新 Worker secrets"
 printf '%s' "$BETTER_AUTH_SECRET" | wrangler secret put BETTER_AUTH_SECRET
-printf '%s' "$RESEND_API_KEY" | wrangler secret put RESEND_API_KEY
 
 echo "==> Build"
 npm run build
