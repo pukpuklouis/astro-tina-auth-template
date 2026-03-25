@@ -139,11 +139,8 @@ dist
 # Astro
 .astro
 
-# Don't allow lock files to be committed (This is for templates only)
-
 # Package Manager Lock Files
 package-lock.json
-pnpm-lock.yaml
 yarn.lock
 .yarn/cache
 bun.lockb
@@ -156,4 +153,3 @@ deno.lock
 .agents/skills/
 .agent/skills/
 .claude/skills/
-

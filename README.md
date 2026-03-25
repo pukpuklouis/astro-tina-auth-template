@@ -74,13 +74,13 @@ All commands are run from the root of the project, from a terminal:
 
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run deploy:bootstrap`| One-command CF bootstrap (D1+migration+secrets+deploy) |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| `pnpm install`            | Installs dependencies                            |
+| `pnpm dev`                | Starts local dev server at `localhost:4321`      |
+| `pnpm build`              | Build your production site to `./dist/`          |
+| `pnpm preview`            | Preview your build locally, before deploying     |
+| `pnpm deploy:bootstrap`   | One-command CF bootstrap (D1+migration+secrets+deploy) |
+| `pnpm astro ...`          | Run CLI commands like `astro add`, `astro check` |
+| `pnpm astro -- --help`    | Get help using the Astro CLI                     |
 
 ## Cloudflare 一鍵部署（Template 用）
 
@@ -95,7 +95,7 @@ export BETTER_AUTH_SECRET="$(openssl rand -hex 32)"
 > 首次使用可先到 `/login` 切換到「註冊」，建立第一個管理員帳號。
 
 ```bash
-npm run deploy:bootstrap
+pnpm deploy:bootstrap
 ```
 
 腳本會自動執行：

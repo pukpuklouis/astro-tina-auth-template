@@ -16,15 +16,16 @@ This is a CLI auth-context issue in the current shell/session, not a project-cod
 ## Fix options
 1. Use API token in shell:
    - `export CLOUDFLARE_API_TOKEN=...`
-   - `npx wrangler deploy`
+   - `pnpm exec wrangler deploy`
 2. Or refresh OAuth login:
-   - `npx wrangler logout`
-   - `npx wrangler login`
-   - `npx wrangler deploy`
+   - `pnpm exec wrangler logout`
+   - `pnpm exec wrangler login`
+   - `pnpm exec wrangler deploy`
 
 ## Template readiness updates done
 - Worker/project name changed in `wrangler.jsonc` to: `astro-tina-auth-template`
-- npm package name changed in `package.json` to: `astro-tina-auth-template`
+- package manager switched to `pnpm`
+- `packageManager` set in `package.json` to: `pnpm@10.17.0`
 - `.dev.vars` is now ignored via `.gitignore` to avoid leaking local config
 - Auth base URL fallback no longer hard-codes a specific Worker URL; now uses request origin
 

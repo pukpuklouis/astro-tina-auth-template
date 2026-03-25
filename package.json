@@ -2,12 +2,13 @@
   "name": "astro-tina-auth-template",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@10.17.0",
   "scripts": {
     "dev": "tinacms dev -c \"astro dev\"",
     "build": "tinacms build --local --skip-cloud-checks -c \"astro build\"",
     "postbuild": "printf \"_worker.js\\n\" > dist/.assetsignore && sed -i '' '/\"\\/admin\\/index.html\"/d' dist/_routes.json",
     "preview": "astro preview",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "pnpm build && pnpm exec wrangler deploy",
     "deploy:bootstrap": "./scripts/bootstrap-cloudflare.sh",
     "astro": "astro"
   },

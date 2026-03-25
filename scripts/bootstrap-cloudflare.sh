@@ -13,6 +13,10 @@ CONFIG_FILE="wrangler.jsonc"
 MIGRATION_FILE="migrations/0001_better_auth_init.sql"
 DB_BINDING="DB"
 
+run_wrangler() {
+  pnpm exec wrangler "$@"
+}
+
 read_jsonc_string() {
   local key="$1"
   local line
@@ -33,8 +37,13 @@ if [[ ! -f "$MIGRATION_FILE" ]]; then
   exit 1
 fi
 
-if ! command -v wrangler >/dev/null 2>&1; then
-  echo "❌ 找不到 wrangler，請先 npm install"
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "❌ 找不到 pnpm，請先啟用 Corepack 或安裝 pnpm"
+  exit 1
+fi
+
+if ! pnpm exec wrangler --version >/dev/null 2>&1; then
+  echo "❌ 找不到 wrangler，請先執行 pnpm install"
   exit 1
 fi
 
@@ -50,10 +59,10 @@ fi
 WORKER_NAME="${WORKER_NAME:-$(read_jsonc_string name)}"
 
 echo "==> 驗證 Cloudflare 登入狀態"
-wrangler whoami >/dev/null
+run_wrangler whoami >/dev/null
 
 echo "==> 驗證 wrangler 設定"
-wrangler check >/dev/null
+run_wrangler check >/dev/null
 
 echo "==> 檢查/建立 D1 資料庫"
 if DB_NAME_FROM_CONFIG="$(read_jsonc_string database_name 2>/dev/null)"; then
@@ -62,23 +71,23 @@ if DB_NAME_FROM_CONFIG="$(read_jsonc_string database_name 2>/dev/null)"; then
 else
   DB_NAME="${WORKER_NAME}-auth-db"
   echo "   wrangler.jsonc 尚未有 d1_databases，建立: $DB_NAME"
-  wrangler d1 create "$DB_NAME" --location apac --binding "$DB_BINDING" --update-config
+  run_wrangler d1 create "$DB_NAME" --location apac --binding "$DB_BINDING" --update-config
 fi
 
 echo "==> 套用 D1 migrations"
-wrangler d1 migrations apply "$DB_NAME" --remote
+run_wrangler d1 migrations apply "$DB_NAME" --remote
 
 echo "==> 確保 Better Auth 基礎 schema 已建立"
-wrangler d1 execute "$DB_NAME" --remote --file "$MIGRATION_FILE"
+run_wrangler d1 execute "$DB_NAME" --remote --file "$MIGRATION_FILE"
 
 echo "==> 更新 Worker secrets"
-printf '%s' "$BETTER_AUTH_SECRET" | wrangler secret put BETTER_AUTH_SECRET
+printf '%s' "$BETTER_AUTH_SECRET" | run_wrangler secret put BETTER_AUTH_SECRET
 
 echo "==> Build"
-npm run build
+pnpm build
 
 echo "==> Deploy"
-wrangler deploy
+run_wrangler deploy
 
 WORKER_URL="${WORKER_URL:-}"
 if [[ -z "$WORKER_URL" ]]; then
